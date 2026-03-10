@@ -1,0 +1,88 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head> 
+    <body>
+        background-color : light
+        <p>
+            <h1 id = "heading-id">this is Heading</h1>
+            <button>submit button </button>
+        </p>
+    </body>
+    <script>
+        const data = 10;
+        const he..; ading = document.getElementById("heading-id");
+        heading.innerText="This is a new heading";
+        heading.style.color = "red";
+        const button = document.getElementById("button-id");
+        button.disabled=true;
+         document.style.body.color = "white"; -->
+    <!-- </script>
+
+    
+</html>  -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dark/Light Mode Toggle</title>
+  <style>
+    /* Default Light Mode */
+    body {
+      background-color: white;
+      color: black;
+      font-family: Arial, sans-serif;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* Dark Mode */
+    body.dark-mode {
+      background-color: #121212;
+      color: white;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: #0078d7;
+      color: white;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #005a9e;
+    }
+  </style>
+</head>
+<body>
+  <h3>Click to convert dark and light mode </h3>
+  <button id="toggle-btn"> Dark/Light Mode</button>
+
+  <script>
+    const toggleBtn = document.getElementById("toggle-btn");
+
+    // Check if user previously selected a mode
+    if (localStorage.getItem("theme") === "dark") {
+      document.body.classList.add("dark-mode");
+    }
+
+    toggleBtn.addEventListener("click", () => {
+      document.body.classList.toggle("dark-mode");
+
+      // Save user choice in localStorage
+      if (document.body.classList.contains("dark-mode")) {
+        localStorage.setItem("theme", "dark");
+      } else {
+        localStorage.setItem("theme", "light");
+      }
+    });
+  </script>
+</body>
+</html>
