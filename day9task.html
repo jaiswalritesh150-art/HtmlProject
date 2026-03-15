@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Budget Chatbot</title>
+</head>
+<body>
+  <h1>My Budget Chatbot</h1>
+  <input id="userInput" type="text" placeholder="Type your message...">
+  <button onclick="sendMessage()">Send</button>
+  <div id="chatResponse"></div>
+
+  <script>
+    // --- Load saved data ---
+    let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+    let monthlyBudget = JSON.parse(localStorage.getItem("monthlyBudget")) || 10000;
+    let savedMonth = localStorage.getItem("month");
+
+    // --- Monthly Reset ---
+    const currentMonth = new Date().getMonth();
+    if (savedMonth === null || parseInt(savedMonth) !== currentMonth) {
+      expenses = [];
+      localStorage.setItem("expenses", JSON.stringify(expenses));
+      localStorage.setItem("month", currentMonth);
+    }
+
+    async function sendMessage() {
+      const userText = document.getElementById("userInput").value;
+
+      // --- Handle expense logging ---
+      if (userText.toLowerCase().includes("spent")) {
+        const amountMatch = userText.match(/\d+/);
+        if (amountMatch) {
+          const amount = parseInt(amountMatch[0]);
+          let category = "other";
+          if (userText.toLowerCase().includes("food")) category = "food";
+          else if (userText.toLowerCase().includes("travel")) category = "travel";
+          else if (userText.toLowerCase().includes("shopping")) category = "shopping";
+
+          expenses.push({ amount, category });
+          localStorage.setItem("expenses", JSON.stringify(expenses));
+        }
+      }
+
+      // --- Handle budget setting ---
+      if (userText.toLowerCase().includes("set budget")) {
+        const amountMatch = userText.match(/\d+/);
+        if (amountMatch) {
+          monthlyBudget = parseInt(amountMatch[0]);
+          localStorage.setItem("monthlyBudget", JSON.stringify(monthlyBudget));
+        }
+      }
+
+      // --- Totals ---
+      const totalSpent = expenses.reduce((sum, val) => sum + val.amount, 0);
+      const remainingBudget = monthlyBudget - totalSpent;
+
+      // --- Category breakdown ---                                   
+      const categoryTotals = expenses.reduce((acc, val) => {
+        acc[val.category] = (acc[val.category] || 0) + val.amount;
+        return acc;
+      }, {});
+
+      // --- AI reply placeholder (removed API call) ---
+      let aiReply = "Okay, noted!";
+
+      // --- Show chatbot + budget info ---
+      let breakdownHTML = "<ul>";
+      for (const [cat, amt] of Object.entries(categoryTotals)) {
+        breakdownHTML += `<li>${cat}: ₹${amt}</li>`;
+      }
+      breakdownHTML += "</ul>";
+
+      // --- Alerts ---
+      let alertMessage = "";
+      if (remainingBudget <= monthlyBudget * 0.2) {
+        alertMessage = "<p style='color:red'><strong>⚠️ Warning:</strong> You are close to exceeding your budget!</p>";
+      }
+
+      document.getElementById("chatResponse").innerHTML = `
+        <p><strong>Chatbot:</strong> ${aiReply}</p>
+        <p><strong>Monthly Budget:</strong> ₹${monthlyBudget}</p>
+        <p><strong>Total Spent:</strong> ₹${totalSpent}</p>
+        <p><strong>Remaining Budget:</strong> ₹${remainingBudget}</p>
+        <p><strong>Category Breakdown:</strong> ${breakdownHTML}</p>
+        ${alertMessage}
+      `;
+    }
+  </script>
+</body>
+</html>
